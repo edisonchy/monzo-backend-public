@@ -1,0 +1,52 @@
+services:
+  postgres:
+    build:
+      context: ./deploy
+      dockerfile: Dockerfile.local-postgres
+    env_file: secrets/local-dashboard/.env.database
+    volumes:
+      - data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD", "pg_isready", "-h", "127.0.0.1", "-U", "postgres", "-d", "monzo"]
+      interval: 2s
+      timeout: 3s
+      retries: 45
+  migrate:
+    image: ${LOCAL_API_IMAGE:?start with scripts/local-dashboard.sh}
+    env_file: secrets/local-dashboard/.env.migrate
+    command: [alembic, upgrade, head]
+    depends_on:
+      postgres: {condition: service_healthy}
+  api:
+    image: ${LOCAL_API_IMAGE:?start with scripts/local-dashboard.sh}
+    env_file:
+      - secrets/local-dashboard/.env
+      - secrets/local-dashboard/dashboard.env
+    depends_on:
+      migrate: {condition: service_completed_successfully}
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8080/health/ready',timeout=3)"]
+      interval: 3s
+      timeout: 4s
+      retries: 30
+  frontend:
+    build: ./frontend
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://localhost:3000/health').then(r=>process.exit(r.ok?0:1))"]
+      interval: 3s
+      timeout: 4s
+      retries: 30
+  gateway:
+    image: nginxinc/nginx-unprivileged:1.30.6-alpine@sha256:782bb89768cc87b7f95c18b95baa1af250e5d451f26794f59363540161147c01
+    user: "${LOCAL_UID}:${LOCAL_GID}"
+    entrypoint: [nginx, -g, "daemon off;"]
+    volumes:
+      - ./secrets/local-dashboard/gateway.conf:/etc/nginx/nginx.conf:ro
+      - ./secrets/local-dashboard/localhost.crt:/tmp/localhost.crt:ro
+      - ./secrets/local-dashboard/localhost.key:/tmp/localhost.key:ro
+    ports: ["127.0.0.1:39475:8082"]
+    depends_on:
+      api: {condition: service_healthy}
+      frontend: {condition: service_healthy}
+volumes:
+  data:

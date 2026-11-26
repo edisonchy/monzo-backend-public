@@ -1,0 +1,221 @@
+{
+  "id": "monzoEmailAlerts",
+  "name": "Monzo \u2014 email incident delivery",
+  "active": false,
+  "nodes": [
+    {
+      "id": "866bc70a-40e7-4f6c-b00b-a8068f17acc8",
+      "name": "Schedule",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        0,
+        0
+      ],
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "minutes",
+              "minutesInterval": 1
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "7228256c-2c18-48f3-88b4-9622ddc5d52b",
+      "name": "Claim notification",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        250,
+        0
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "http://api:8080/v1/notifications/claim",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "{}",
+        "options": {
+          "timeout": 15000
+        }
+      },
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "monzoBackendAuth1",
+          "name": "Monzo Backend Automation"
+        }
+      }
+    },
+    {
+      "id": "c7abde32-5959-435b-acd0-49c6923b64d6",
+      "name": "Has notification",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        500,
+        0
+      ],
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "e7a39b0a-3da2-4ce4-a2d0-ef36d16c2d14",
+              "leftValue": "={{ $json.notification !== null }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "fbad6a68-a5fc-4262-8083-b020df32228b",
+      "name": "Send email",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        750,
+        -100
+      ],
+      "parameters": {
+        "fromEmail": "${MONZO_ALERT_FROM}",
+        "toEmail": "${MONZO_ALERT_TO}",
+        "subject": "={{ $json.notification.subject }}",
+        "emailFormat": "text",
+        "text": "={{ $json.notification.body }}",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "credentials": {
+        "smtp": {
+          "id": "monzoSmtpAlerts01",
+          "name": "Monzo Alert Mailbox"
+        }
+      }
+    },
+    {
+      "id": "2c10682e-ca1f-47db-99ca-6e679f7bb2b9",
+      "name": "Acknowledge delivery",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1000,
+        -100
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "={{ \"http://api:8080/v1/notifications/\" + $(\"Claim notification\").first().json.notification.id + \"/ack\" }}",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({lease_token: $(\"Claim notification\").first().json.notification.lease_token}) }}",
+        "options": {
+          "timeout": 15000
+        }
+      },
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "monzoBackendAuth1",
+          "name": "Monzo Backend Automation"
+        }
+      }
+    },
+    {
+      "id": "2d43723a-20a5-481d-bda0-098de5fbb257",
+      "name": "Run on demand",
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        0,
+        200
+      ],
+      "parameters": {
+        "inputSource": "passthrough"
+      }
+    }
+  ],
+  "connections": {
+    "Schedule": {
+      "main": [
+        [
+          {
+            "node": "Claim notification",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Claim notification": {
+      "main": [
+        [
+          {
+            "node": "Has notification",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Has notification": {
+      "main": [
+        [
+          {
+            "node": "Send email",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        []
+      ]
+    },
+    "Send email": {
+      "main": [
+        [
+          {
+            "node": "Acknowledge delivery",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Run on demand": {
+      "main": [
+        [
+          {
+            "node": "Claim notification",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "timezone": "Europe/London",
+    "saveDataSuccessExecution": "none",
+    "saveDataErrorExecution": "none",
+    "saveManualExecutions": false
+  },
+  "pinData": {}
+}

@@ -1,0 +1,305 @@
+/* Personal finance dashboard */
+:root {
+  color-scheme: dark;
+  accent-color: var(--color-accent);
+  --color-outer: #101012;
+  --color-on-accent: #261320;
+  --color-accent-hover: #ff93d6;
+  --color-canvas: #111113;
+  --color-surface: #202023;
+  --color-surface-muted: #323236;
+  --color-text: #f6f6f8;
+  --color-text-secondary: #b5b5bf;
+  --color-border: #414146;
+  --color-control-border: #83838e;
+  --color-accent: #ff62ac;
+  --color-accent-soft: #452436;
+  --color-positive: #70dfc2;
+  --color-positive-soft: #203b37;
+  --color-warning: #ffcf9d;
+  --color-warning-soft: #382a20;
+  --color-danger: #ffa5b4;
+  --color-danger-soft: #472b39;
+  --color-ai: #c7b8ff;
+  --color-ai-soft: #392f4a;
+  --color-focus: #70dfc2;
+  --color-chart-previous: #9699a8;
+  --color-shopping: #d4df8b;
+  --color-bills: #ffba90;
+  --color-groceries: #70dfc2;
+  --color-transport: #a7acff;
+  --color-eating-out: #ff82cc;
+  --color-entertainment: #d2aeff;
+  --color-holidays: #95d6bd;
+  --color-health: #ff99ab;
+  --color-education: #a5cded;
+  --color-gifts: #f2a9dd;
+  --color-cash: #b3c5c9;
+  --color-income: #9fdab1;
+  --color-transfers: #b5bfd9;
+  --color-general: #d3c6af;
+  --font-body: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --text-caption: 0.8125rem;
+  --text-small: 0.875rem;
+  --text-body: 1rem;
+  --text-row: 1.125rem;
+  --text-section: 1.375rem;
+  --text-title: 2rem;
+  --text-amount: clamp(2.25rem, 5vw, 3rem);
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.5rem;
+  --space-6: 2rem;
+  --space-7: 3rem;
+  --space-8: 4rem;
+  --radius-small: 0.75rem;
+  --radius-control: 0.625rem;
+  --radius-card: 0.875rem;
+  --radius-pill: 999px;
+  --shadow-card: 0 4px 16px rgb(10 5 13 / 14%);
+  --shadow-control: 0 2px 8px rgb(10 5 13 / 18%);
+  --content-width: 75rem;
+  --tap-target: 2.75rem;
+  --motion-fast: 140ms;
+  --motion-normal: 220ms;
+  --motion-ease: cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+body {
+  margin: 0;
+  font: 400 var(--text-body)/1.5 var(--font-body);
+  background: var(--color-canvas);
+  color: var(--color-text);
+}
+button,
+input,
+select {
+  font: inherit;
+}
+button,
+a,
+input,
+select {
+  -webkit-tap-highlight-color: transparent;
+}
+button {
+  cursor: pointer;
+}
+button:disabled {
+  cursor: not-allowed;
+}
+:focus-visible {
+  outline: 3px solid var(--color-focus);
+  outline-offset: 4px;
+}
+[hidden] {
+  display: none !important;
+}
+::selection {
+  background: #873e72;
+  color: #fff;
+}
+a {
+  color: var(--color-accent);
+  text-underline-offset: 0.2em;
+}
+.m-card {
+  background: var(--color-surface);
+  border-radius: var(--radius-card);
+  padding: var(--space-5);
+  box-shadow: var(--shadow-card);
+}
+.m-button {
+  min-height: var(--tap-target);
+  padding: 0.625rem 1.125rem;
+  border: 1px solid transparent;
+  border-radius: var(--radius-control);
+  background: var(--color-accent);
+  color: var(--color-on-accent);
+  font-weight: 650;
+  transition: background var(--motion-fast) var(--motion-ease);
+}
+.m-button:hover {
+  background: var(--color-accent-hover);
+}
+.m-button.secondary {
+  background: var(--color-surface);
+  border-color: var(--color-border);
+  color: var(--color-text);
+}
+.m-button.secondary:hover {
+  background: var(--color-accent-soft);
+}
+.m-button.danger {
+  background: var(--color-danger);
+}
+.m-button:disabled {
+  background: var(--color-surface-muted);
+  color: var(--color-text-secondary);
+  border-color: var(--color-border);
+}
+.m-segment {
+  display: flex;
+  gap: 0.25rem;
+  padding: 0.25rem;
+  background: var(--color-outer);
+  border-radius: var(--radius-control);
+}
+.m-segment button {
+  flex: 1;
+  min-height: var(--tap-target);
+  padding: 0.5rem 1rem;
+  border: 0;
+  background: transparent;
+  color: var(--color-text-secondary);
+  border-radius: var(--radius-control);
+  white-space: nowrap;
+}
+.m-segment button[aria-pressed="true"] {
+  background: var(--color-surface-muted);
+  color: var(--color-text);
+  font-weight: 650;
+  box-shadow: var(--shadow-control);
+}
+.m-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: var(--text-caption);
+  line-height: 1.4;
+  font-weight: 650;
+  border-radius: var(--radius-pill);
+  padding: 0.35rem 0.65rem;
+  color: var(--color-accent);
+  background: var(--color-accent-soft);
+}
+.m-badge.suggested {
+  background: var(--color-ai-soft);
+  color: var(--color-ai);
+}
+.m-badge.neutral {
+  background: var(--color-surface-muted);
+  color: var(--color-text-secondary);
+}
+.m-badge.review {
+  background: var(--color-warning-soft);
+  color: var(--color-warning);
+}
+.m-badge.approved {
+  background: var(--color-positive-soft);
+  color: var(--color-positive);
+}
+.m-badge.error {
+  background: var(--color-danger-soft);
+  color: var(--color-danger);
+}
+.m-label {
+  display: block;
+  font-weight: 650;
+  font-size: var(--text-small);
+  margin-bottom: 0.5rem;
+}
+.m-input {
+  min-height: var(--tap-target);
+  border: 1px solid var(--color-control-border);
+  border-radius: var(--radius-control);
+  background: var(--color-surface);
+  padding: 0.75rem 1rem;
+  width: 100%;
+  color: var(--color-text);
+}
+.m-input[aria-invalid="true"] {
+  border-color: var(--color-danger);
+}
+.m-help {
+  color: var(--color-text-secondary);
+  font-size: var(--text-small);
+  margin: 0.5rem 0;
+}
+.m-error {
+  color: var(--color-danger);
+  font-size: var(--text-small);
+}
+.m-amount {
+  font-variant-numeric: tabular-nums;
+  font-weight: 650;
+  letter-spacing: -0.045em;
+  line-height: 1.1;
+  white-space: nowrap;
+}
+.m-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  min-height: 80px;
+  padding: 1rem 0;
+  border-bottom: 1px solid var(--color-border);
+}
+.m-row:last-child {
+  border-bottom: 0;
+}
+.m-icon {
+  display: inline-grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  flex: 0 0 44px;
+  border-radius: 14px;
+  background: var(--color-accent-soft);
+  color: var(--color-accent);
+}
+.m-icon svg {
+  width: 24px;
+  height: 24px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.m-row-main {
+  flex: 1;
+  min-width: 0;
+}
+.m-row-main strong {
+  display: block;
+  font-size: var(--text-row);
+  font-weight: 550;
+  overflow-wrap: anywhere;
+}
+.m-row-main small {
+  display: block;
+  color: var(--color-text-secondary);
+  font-size: var(--text-caption);
+}
+.m-notice {
+  display: flex;
+  gap: 1rem;
+  padding: 1rem 1.25rem;
+  border-radius: var(--radius-control);
+  background: var(--color-warning-soft);
+  color: var(--color-warning);
+}
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition: none !important;
+    animation: none !important;
+    scroll-behavior: auto !important;
+  }
+}

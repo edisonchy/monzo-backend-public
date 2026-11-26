@@ -1,0 +1,298 @@
+/* Shared list and form treatment for the finance dashboard. */
+#view :is(.m-card, .settings-disclosure, .report-links),
+.login.m-card {
+  border: 0;
+  border-radius: 16px;
+  background: var(--color-surface);
+  box-shadow: none;
+}
+#view .m-card {
+  padding: clamp(16px, 2vw, 24px);
+}
+#view :is(.m-card h2, .settings-disclosure summary) {
+  font-size: 1.06rem;
+  font-weight: 620;
+  letter-spacing: -0.018em;
+}
+.settings-disclosure {
+  padding: 0 18px;
+  margin: 12px 0;
+}
+.settings-disclosure > summary,
+.report-links a {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 50px;
+  color: var(--color-text);
+  cursor: pointer;
+  list-style: none;
+  text-decoration: none;
+}
+.settings-disclosure > summary::-webkit-details-marker {
+  display: none;
+}
+.settings-disclosure > summary::after,
+.report-links a::after {
+  content: "";
+  height: 7px;
+  width: 7px;
+  border: solid var(--color-text-secondary);
+  border-width: 1.5px 1.5px 0 0;
+  transform: rotate(45deg);
+  margin-right: 4px;
+}
+.settings-disclosure[open] > summary::after {
+  transform: rotate(135deg);
+}
+
+.report-links {
+  padding: 0 18px;
+  margin: 0 0 16px;
+}
+.report-links a + a,
+.balance-pots > div + div {
+  border-top: 1px solid var(--color-border);
+}
+[data-view="balances"] .balance-amount {
+  font-size: clamp(2.2rem, 5vw, 3.3rem);
+  font-weight: 650;
+  letter-spacing: -0.04em;
+  line-height: 1.15;
+  margin: 8px 0 14px;
+}
+.balance-history summary {
+  min-height: 44px;
+  align-content: center;
+  cursor: pointer;
+  color: var(--color-text);
+}
+#view .budget-card .balance-pots > div {
+  padding-block: 9px;
+}
+#view .budget-card .balance-pots dd,
+.balance-pots dd {
+  font-variant-numeric: tabular-nums;
+}
+#view .budget-card .balance-pots > div:first-child {
+  border: 0;
+}
+.review-tools .m-segment {
+  order: -1;
+  grid-column: 1/-1;
+  display: flex;
+  background: var(--color-surface);
+  padding: 3px;
+  border: 0;
+  border-radius: 11px;
+}
+.review-tools .m-segment button {
+  flex: 1;
+  margin: 0;
+  border: 0;
+  min-height: 44px;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--color-text-secondary);
+  font-weight: 550;
+}
+.review-tools .m-segment button[aria-pressed="true"] {
+  background: #39393e;
+  color: var(--color-text);
+}
+#view .review-tools {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: end;
+  gap: 12px;
+  background: transparent;
+  padding: 0;
+  border: none;
+}
+.review-tools label {
+  min-width: 0;
+  color: var(--color-text-secondary);
+  font-size: 0.875rem;
+}
+.review-tools .transaction-search {
+  min-width: 0;
+}
+.review-tools .transaction-search input {
+  min-width: 0;
+  width: 100%;
+}
+#view .review-tools .m-input {
+  font: inherit;
+  margin: 0;
+  max-width: 100%;
+}
+@media (max-width: 600px) {
+  #view .review-tools {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+#content :is(.m-input, .budget-controls input, .budget-controls select),
+.login .m-input {
+  border-radius: 10px;
+}
+#content .m-help:empty,
+#budget-message:empty,
+.login .m-error:empty {
+  display: none;
+}
+#content .date-heading {
+  font-size: 0.83rem;
+  letter-spacing: 0;
+  text-transform: none;
+  font-weight: 550;
+  color: var(--color-text-secondary);
+}
+#content :is(.settings-grid, .budget-grid) {
+  align-items: start;
+}
+.login {
+  max-width: 25rem;
+  margin-inline: auto;
+}
+.login h1 {
+  font-size: 1.8rem;
+  letter-spacing: -0.035em;
+}
+.login form {
+  display: grid;
+  gap: 8px;
+}
+.login form button {
+  margin-top: 8px;
+}
+@media (hover: hover) {
+  .report-links a:hover,
+  .settings-disclosure > summary:hover {
+    color: var(--color-accent);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .data-row,
+  .m-button,
+  .text-button {
+    transition: none;
+  }
+}
+@media (max-width: 600px) {
+  #view .review-tools label {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: 16px;
+    white-space: nowrap;
+  }
+  #view .review-tools select.m-input {
+    width: 100%;
+  }
+}
+.disclosure-body {
+  padding: 0 0 16px;
+}
+.update-note {
+  font-size: 0.875rem;
+  color: var(--color-text-secondary);
+  margin: 0 0 12px;
+}
+.budget-remaining {
+  font-size: 1rem;
+  color: var(--color-text-secondary);
+  margin: 8px 0 14px;
+}
+.budget-remaining strong {
+  font-size: clamp(1.8rem, 4vw, 2.65rem);
+  color: var(--color-text);
+  letter-spacing: -0.04em;
+  font-variant-numeric: tabular-nums;
+}
+#content .reference-sheet .reference-heading,
+#detail .payment-heading {
+  font-variant-numeric: tabular-nums;
+}
+:where(
+  .filter-nav-row,
+  .filter-option,
+  .category-rows label,
+  .scope-option,
+  .receipt-category,
+  .report-links a
+):active {
+  background-color: var(--color-surface-muted);
+}
+:where(
+    .report-links,
+    .settings-disclosure,
+    .category-menu,
+    .reference-sheet,
+    .login,
+    .balance-history,
+    .review-tools
+  )
+  :focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: -2px;
+}
+@media (max-width: 600px) {
+  .login.m-card {
+    margin: clamp(30px, 12dvh, 100px) 16px 16px;
+    width: auto;
+  }
+}
+.merchant-rule > summary {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 48px;
+  cursor: pointer;
+  list-style: none;
+}
+.merchant-rule > summary::-webkit-details-marker {
+  display: none;
+}
+.merchant-rule > summary strong {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.merchant-rule > summary span {
+  margin-left: auto;
+  color: var(--color-text-secondary);
+  overflow-wrap: anywhere;
+}
+.merchant-rule > summary::after {
+  content: "";
+  width: 7px;
+  height: 7px;
+  flex: none;
+  border: solid var(--color-text-secondary);
+  border-width: 1.5px 1.5px 0 0;
+  transform: rotate(45deg);
+}
+.merchant-rule[open] > summary::after {
+  transform: rotate(135deg);
+}
+.merchant-rule form {
+  padding: 6px 0 12px;
+}
+#view .budget-controls {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin-bottom: 16px;
+}
+#view .budget-controls label {
+  display: grid;
+  min-width: 0;
+}
+#view .budget-controls .m-input {
+  width: 100%;
+  min-width: 0;
+  max-width: none;
+}
+@media (max-width: 600px) {
+  #view .budget-controls {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
